@@ -1,0 +1,58 @@
+# ===== Python =====
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+.venv/
+venv/
+env/
+*.egg-info/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+.tox/
+
+# ===== Env / secrets =====
+.env
+.env.local
+.env.*.local
+
+# ===== App data (DB, uploaded files) =====
+data/*.db
+data/*.sqlite
+data/*.sqlite3
+data/uploads/
+!data/.gitkeep
+
+# ===== OCR 原始产物（按需）=====
+ingestion/raw/
+ingestion/ocr_output/
+ingestion/cache/
+ingestion/human_review.csv
+
+# ===== Claude Code 本地配置 =====
+.claude/
+
+# ===== 题源（商业教材 200MB，不入库）=====
+27王道《数据结构》高清带书签.pdf
+
+# ===== 原始提示词/笔记（个人）=====
+prompts/*.docx
+
+# ===== 临时截图 =====
+grading_sample.png
+
+# ===== 编辑器 / OS =====
+.vscode/
+.idea/
+*.swp
+*.swo
+.DS_Store
+Thumbs.db
+
+# ===== 日志 =====
+*.log
+logs/
