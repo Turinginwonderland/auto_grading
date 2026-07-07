@@ -8,7 +8,7 @@
 | 里程碑 | 状态 |
 |---|---|
 | P1.0 基础架子（FastAPI + DB + grade 接口 + mock rubric） | ✅ |
-| P1.1 OCR 题目入库（PDF → 题库 ≥ 30 道） | TODO |
+| P1.1 OCR 题目入库（PDF → 题库 ≥ 30 道） | ✅ 流水线已就绪 + 34 道示例题 |
 | P1.2 System Prompt v2 + Few-shot + 重试/校验 | ✅（已写） |
 | P1.3 评分缓存 + 异步化 | ✅（缓存已写；异步待 P1.3） |
 | P1.4 评测集 + 一致性报告 | TODO |
@@ -127,8 +127,55 @@ auto_grading/
 pytest -q
 ```
 
+## 题目入库（P1.1 OCR 流水线）
+
+### 一次性：把示例题集灌入 DB
+
+```bash
+python -m scripts.seed_problems --json data/sample_problems.json
+# 已带 34 道经典数据结构题（链表/栈/树/图/排序/DP）
+```
+
+### 端到端：从 PDF 入库
+
+```bash
+# 1. 选 OCR 后端（默认 mock；生产推荐 paddleocr 或 vision_api）
+# 装 paddleocr（首次重）
+pip install paddlepaddle paddleocr
+# 或用云视觉：在 .env 设 VISION_API_KEY=gpt-4o key
+
+# 2. 跑流水线
+python -m ingestion.runner \
+  --pdf "27王道《数据结构》高清带书签.pdf" \
+  --backend paddleocr \
+  --review-ratio 0.1
+
+# 不入库只生成中间产物：
+python -m ingestion.runner --pdf xxx.pdf --backend mock --limit 20 --no-db
+```
+
+### 人工抽检
+
+抽检结果写在 `ingestion/human_review.csv`，编辑后状态值：
+
+- `confirmed` — 通过
+- `edited` — 改了，edited_json 填新 JSON
+- `rejected` — 拒绝
+
+下次再跑 `python -m ingestion.runner ...` 时会自动应用抽检结果。
+
+### OCR 后端选择
+
+| 后端 | 安装 | 中文 | 含图 | 速度 |
+|---|---|---|---|---|
+| `mock` | 无依赖（默认） | 模板 | 模板 | ⚡⚡⚡ |
+| `paddleocr` | `pip install paddlepaddle paddleocr` | ⭐⭐⭐⭐⭐ | 弱 | ⚡ |
+| `tesseract` | `pip install pytesseract` + 装 Tesseract 二进制 | ⭐⭐ | 弱 | ⚡⚡ |
+| `vision_api` | 需 `VISION_API_KEY`（gpt-4o 之类） | ⭐⭐⭐⭐ | ⭐⭐⭐⭐⭐ | 🐢 |
+
+设置：`export INGESTION_OCR_BACKEND=paddleocr`
+
 ## 下一步
 
-- **P1.1**：基于 `27王道《数据结构》高清带书签.pdf` 跑 OCR 流水线，入库 ≥ 30 道题
 - **P1.3**：把 `grade_submission` 改异步，前端拿 submission_id 轮询
 - **P1.4**：建 20-30 条带标注的评测集，统计吻合率（< 80% 不许过 P1）

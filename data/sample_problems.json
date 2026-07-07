@@ -1,0 +1,616 @@
+{
+  "problems": [
+    {
+      "problem_id": "ds-linkedlist-01",
+      "title": "删除链表中重复的节点",
+      "description": "在一个排序的链表中，删除重复的节点，使得每个节点的值只出现一次。",
+      "difficulty": "easy",
+      "input_format": "链表头节点指针，例如 1->2->3->3->4->4->5",
+      "output_format": "去重后的链表头节点，例如 1->2->3->4->5",
+      "examples": [{"input": "1->2->3->3->4->4->5", "output": "1->2->3->4->5"}],
+      "constraints": "0 <= 链表长度 <= 300",
+      "reference_solution": "def deleteDuplicates(head):\n    cur = head\n    while cur and cur.next:\n        if cur.val == cur.next.val:\n            cur.next = cur.next.next\n        else:\n            cur = cur.next\n    return head\n",
+      "test_cases": [
+        {"input": "1->2->3->3->4->4->5", "expected": "1->2->3->4->5"},
+        {"input": "1->1->1->1", "expected": "1"},
+        {"input": "1->2->3", "expected": "1->2->3"}
+      ],
+      "source_book": "27王道数据结构",
+      "source_chapter": "线性表",
+      "source_page": 42
+    },
+    {
+      "problem_id": "ds-linkedlist-02",
+      "title": "反转链表",
+      "description": "反转一个单链表。",
+      "difficulty": "easy",
+      "input_format": "链表头节点",
+      "output_format": "反转后的链表头节点",
+      "examples": [{"input": "1->2->3->4->5", "output": "5->4->3->2->1"}],
+      "constraints": "节点数 [0, 5000]",
+      "reference_solution": "def reverseList(head):\n    prev, cur = None, head\n    while cur:\n        nxt = cur.next\n        cur.next = prev\n        prev = cur\n        cur = nxt\n    return prev\n",
+      "test_cases": [
+        {"input": "1->2->3->4->5", "expected": "5->4->3->2->1"},
+        {"input": "1->2", "expected": "2->1"},
+        {"input": "", "expected": ""}
+      ],
+      "source_book": "27王道数据结构",
+      "source_chapter": "线性表",
+      "source_page": 45
+    },
+    {
+      "problem_id": "ds-linkedlist-03",
+      "title": "合并两个有序链表",
+      "description": "将两个升序链表合并为一个新的升序链表。",
+      "difficulty": "easy",
+      "input_format": "两个链表头节点 l1, l2",
+      "output_format": "合并后的链表头节点",
+      "examples": [{"input": "l1=1->2->4, l2=1->3->4", "output": "1->1->2->3->4->4"}],
+      "constraints": "两链表节点数之和 <= 50",
+      "reference_solution": "def mergeTwoLists(l1, l2):\n    dummy = ListNode(0)\n    cur = dummy\n    while l1 and l2:\n        if l1.val <= l2.val:\n            cur.next, l1 = l1, l1.next\n        else:\n            cur.next, l2 = l2, l2.next\n        cur = cur.next\n    cur.next = l1 or l2\n    return dummy.next\n",
+      "test_cases": [
+        {"input": "1->2->4, 1->3->4", "expected": "1->1->2->3->4->4"},
+        {"input": "", "expected": ""},
+        {"input": "5, 1->2->4", "expected": "1->2->4->5"}
+      ],
+      "source_book": "27王道数据结构",
+      "source_chapter": "线性表",
+      "source_page": 47
+    },
+    {
+      "problem_id": "ds-linkedlist-04",
+      "title": "链表中环的检测",
+      "description": "判断链表中是否有环。如果链表中存在环，则返回 true；否则返回 false。",
+      "difficulty": "easy",
+      "input_format": "链表头节点",
+      "output_format": "true / false",
+      "examples": [{"input": "3->2->0->-4, pos=1", "output": "true"}],
+      "constraints": "节点数 [0, 10^4]",
+      "reference_solution": "def hasCycle(head):\n    slow = fast = head\n    while fast and fast.next:\n        slow = slow.next\n        fast = fast.next.next\n        if slow is fast:\n            return True\n    return False\n",
+      "test_cases": [
+        {"input": "3->2->0->-4 pos=1", "expected": "true"},
+        {"input": "1->2 pos=0", "expected": "true"},
+        {"input": "1 pos=-1", "expected": "false"}
+      ],
+      "source_book": "27王道数据结构",
+      "source_chapter": "线性表",
+      "source_page": 50
+    },
+    {
+      "problem_id": "ds-linkedlist-05",
+      "title": "删除链表倒数第 N 个节点",
+      "description": "给你一个链表，删除链表的倒数第 n 个节点，并且返回链表的头节点。",
+      "difficulty": "medium",
+      "input_format": "链表头节点 + 整数 n",
+      "output_format": "删除后链表头节点",
+      "examples": [{"input": "1->2->3->4->5, n=2", "output": "1->2->3->5"}],
+      "constraints": "1 <= n <= 链表长度",
+      "reference_solution": "def removeNthFromEnd(head, n):\n    dummy = ListNode(0, head)\n    slow = fast = dummy\n    for _ in range(n):\n        fast = fast.next\n    while fast.next:\n        slow = slow.next\n        fast = fast.next\n    slow.next = slow.next.next\n    return dummy.next\n",
+      "test_cases": [
+        {"input": "1->2->3->4->5, 2", "expected": "1->2->3->5"},
+        {"input": "1, 1", "expected": ""},
+        {"input": "1->2, 1", "expected": "1"}
+      ],
+      "source_book": "27王道数据结构",
+      "source_chapter": "线性表",
+      "source_page": 52
+    },
+    {
+      "problem_id": "ds-stack-01",
+      "title": "有效的括号",
+      "description": "给定一个只包括 '(', ')', '{', '}', '[', ']' 的字符串，判断字符串是否有效。",
+      "difficulty": "easy",
+      "input_format": "字符串 s",
+      "output_format": "true / false",
+      "examples": [{"input": "()[]{}", "output": "true"}],
+      "constraints": "1 <= s.length <= 10^4",
+      "reference_solution": "def isValid(s):\n    stack, pairs = [], {')':'(', ']':'[', '}':'{'}\n    for ch in s:\n        if ch in '([{':\n            stack.append(ch)\n        else:\n            if not stack or stack.pop() != pairs[ch]:\n                return False\n    return not stack\n",
+      "test_cases": [
+        {"input": "()", "expected": "true"},
+        {"input": "()[]{}", "expected": "true"},
+        {"input": "(]", "expected": "false"},
+        {"input": "([)]", "expected": "false"}
+      ],
+      "source_book": "27王道数据结构",
+      "source_chapter": "栈与队列",
+      "source_page": 78
+    },
+    {
+      "problem_id": "ds-stack-02",
+      "title": "用栈实现队列",
+      "description": "请你仅使用两个栈实现先入先出队列。",
+      "difficulty": "easy",
+      "input_format": "一系列 push / pop / peek / empty 操作",
+      "output_format": "对应返回值",
+      "examples": [
+        {"input": "MyQueue(); push(1); push(2); peek(); pop(); empty()", "output": "1, 1, false"}
+      ],
+      "constraints": "1 <= x <= 9；最多 100 次操作",
+      "reference_solution": "class MyQueue:\n    def __init__(self):\n        self.in_st, self.out_st = [], []\n    def push(self, x):\n        self.in_st.append(x)\n    def pop(self):\n        self._move()\n        return self.out_st.pop()\n    def peek(self):\n        self._move()\n        return self.out_st[-1]\n    def empty(self):\n        return not self.in_st and not self.out_st\n    def _move(self):\n        if not self.out_st:\n            while self.in_st:\n                self.out_st.append(self.in_st.pop())\n",
+      "test_cases": [
+        {"input": "push(1);push(2);peek();pop()", "expected": "1,1"}
+      ],
+      "source_book": "27王道数据结构",
+      "source_chapter": "栈与队列",
+      "source_page": 82
+    },
+    {
+      "problem_id": "ds-stack-03",
+      "title": "最小栈",
+      "description": "设计一个支持 push、pop、top 操作，并能在常数时间内检索到最小元素的栈。",
+      "difficulty": "medium",
+      "input_format": "操作序列",
+      "output_format": "getMin 的返回值",
+      "examples": [
+        {"input": "MinStack();push(-2);push(0);push(-3);getMin();pop();top();getMin()", "output": "-3, 0, -2"}
+      ],
+      "constraints": "-2^31 <= val <= 2^31 - 1",
+      "reference_solution": "class MinStack:\n    def __init__(self):\n        self.st, self.min_st = [], []\n    def push(self, x):\n        self.st.append(x)\n        self.min_st.append(x if not self.min_st else min(x, self.min_st[-1]))\n    def pop(self):\n        self.st.pop(); self.min_st.pop()\n    def top(self):\n        return self.st[-1]\n    def getMin(self):\n        return self.min_st[-1]\n",
+      "test_cases": [{"input": "push -2 0 -3;getMin;pop;top;getMin", "expected": "-3, 0, -2"}],
+      "source_book": "27王道数据结构",
+      "source_chapter": "栈与队列",
+      "source_page": 85
+    },
+    {
+      "problem_id": "ds-stack-04",
+      "title": "表达式求值（后缀表达式）",
+      "description": "根据逆波兰表示法，求表达式的值。",
+      "difficulty": "medium",
+      "input_format": "字符串数组 tokens，如 [\"2\",\"1\",\"+\",\"3\",\"*\"]",
+      "output_format": "整数结果",
+      "examples": [{"input": "[\"2\",\"1\",\"+\",\"3\",\"*\"]", "output": "9"}],
+      "constraints": "操作数和中间结果都在 32 位整数范围内",
+      "reference_solution": "def evalRPN(tokens):\n    st, ops = [], {'+','-','*','/'}\n    for t in tokens:\n        if t in ops:\n            b, a = st.pop(), st.pop()\n            if t == '+': st.append(a + b)\n            elif t == '-': st.append(a - b)\n            elif t == '*': st.append(a * b)\n            else: st.append(int(a / b))\n        else:\n            st.append(int(t))\n    return st[0]\n",
+      "test_cases": [
+        {"input": "[\"2\",\"1\",\"+\",\"3\",\"*\"]", "expected": "9"},
+        {"input": "[\"4\",\"13\",\"5\",\"/\",\"+\"]", "expected": "6"}
+      ],
+      "source_book": "27王道数据结构",
+      "source_chapter": "栈与队列",
+      "source_page": 88
+    },
+    {
+      "problem_id": "ds-queue-01",
+      "title": "滑动窗口最大值",
+      "description": "给你一个整数数组 nums，有一个大小为 k 的滑动窗口从最左侧移到最右侧，返回最大值数组。",
+      "difficulty": "hard",
+      "input_format": "数组 + 整数 k",
+      "output_format": "滑动窗口最大值数组",
+      "examples": [{"input": "nums=[1,3,-1,-3,5,3,6,7], k=3", "output": "[3,3,5,5,6,7]"}],
+      "constraints": "1 <= k <= nums.length <= 10^5",
+      "reference_solution": "def maxSlidingWindow(nums, k):\n    from collections import deque\n    q, res = deque(), []\n    for i, v in enumerate(nums):\n        while q and nums[q[-1]] < v:\n            q.pop()\n        q.append(i)\n        if q[0] <= i - k:\n            q.popleft()\n        if i >= k - 1:\n            res.append(nums[q[0]])\n    return res\n",
+      "test_cases": [
+        {"input": "[1,3,-1,-3,5,3,6,7], 3", "expected": "[3,3,5,5,6,7]"},
+        {"input": "[1], 1", "expected": "[1]"}
+      ],
+      "source_book": "27王道数据结构",
+      "source_chapter": "栈与队列",
+      "source_page": 92
+    },
+    {
+      "problem_id": "ds-tree-01",
+      "title": "二叉树的中序遍历",
+      "description": "给定二叉树根节点，返回其中序遍历序列。",
+      "difficulty": "easy",
+      "input_format": "二叉树根节点",
+      "output_format": "中序遍历结果数组",
+      "examples": [{"input": "root = [1,null,2,3]", "output": "[1,3,2]"}],
+      "constraints": "节点数 [0, 100]",
+      "reference_solution": "def inorderTraversal(root):\n    res, st = [], []\n    cur = root\n    while cur or st:\n        while cur:\n            st.append(cur); cur = cur.left\n        cur = st.pop()\n        res.append(cur.val)\n        cur = cur.right\n    return res\n",
+      "test_cases": [
+        {"input": "[1,null,2,3]", "expected": "[1,3,2]"},
+        {"input": "[]", "expected": "[]"},
+        {"input": "[1]", "expected": "[1]"}
+      ],
+      "source_book": "27王道数据结构",
+      "source_chapter": "树与二叉树",
+      "source_page": 124
+    },
+    {
+      "problem_id": "ds-tree-02",
+      "title": "二叉树的层序遍历",
+      "description": "返回二叉树层序遍历的结果（按层聚合）。",
+      "difficulty": "medium",
+      "input_format": "二叉树根节点",
+      "output_format": "二维数组",
+      "examples": [{"input": "[3,9,20,null,null,15,7]", "output": "[[3],[9,20],[15,7]]"}],
+      "constraints": "节点数 [0, 2000]",
+      "reference_solution": "def levelOrder(root):\n    if not root: return []\n    res, q = [], [root]\n    while q:\n        vals, nq = [], []\n        for node in q:\n            vals.append(node.val)\n            if node.left: nq.append(node.left)\n            if node.right: nq.append(node.right)\n        res.append(vals); q = nq\n    return res\n",
+      "test_cases": [
+        {"input": "[3,9,20,null,null,15,7]", "expected": "[[3],[9,20],[15,7]]"}
+      ],
+      "source_book": "27王道数据结构",
+      "source_chapter": "树与二叉树",
+      "source_page": 128
+    },
+    {
+      "problem_id": "ds-tree-03",
+      "title": "二叉树的最大深度",
+      "description": "给定二叉树根节点，返回其最大深度（根到最远叶子的边数/节点数）。",
+      "difficulty": "easy",
+      "input_format": "二叉树根节点",
+      "output_format": "整数深度",
+      "examples": [{"input": "[3,9,20,null,null,15,7]", "output": "3"}],
+      "constraints": "节点数 [0, 10^4]",
+      "reference_solution": "def maxDepth(root):\n    if not root: return 0\n    return 1 + max(maxDepth(root.left), maxDepth(root.right))\n",
+      "test_cases": [
+        {"input": "[3,9,20,null,null,15,7]", "expected": "3"},
+        {"input": "[1,null,2]", "expected": "2"}
+      ],
+      "source_book": "27王道数据结构",
+      "source_chapter": "树与二叉树",
+      "source_page": 130
+    },
+    {
+      "problem_id": "ds-tree-04",
+      "title": "判断二叉树是否对称",
+      "description": "给定二叉树根节点，判断它是否关于中心轴镜像对称。",
+      "difficulty": "easy",
+      "input_format": "二叉树根节点",
+      "output_format": "true / false",
+      "examples": [{"input": "[1,2,2,3,4,4,3]", "output": "true"}],
+      "constraints": "节点数 [1, 1000]",
+      "reference_solution": "def isSymmetric(root):\n    def check(a, b):\n        if not a and not b: return True\n        if not a or not b: return False\n        return a.val == b.val and check(a.left, b.right) and check(a.right, b.left)\n    return check(root, root)\n",
+      "test_cases": [
+        {"input": "[1,2,2,3,4,4,3]", "expected": "true"},
+        {"input": "[1,2,2,null,3,null,3]", "expected": "false"}
+      ],
+      "source_book": "27王道数据结构",
+      "source_chapter": "树与二叉树",
+      "source_page": 132
+    },
+    {
+      "problem_id": "ds-tree-05",
+      "title": "二叉树的最近公共祖先",
+      "description": "给定二叉树根节点和两个节点 p、q，返回其最近公共祖先。",
+      "difficulty": "medium",
+      "input_format": "root, p, q",
+      "output_format": "LCA 节点",
+      "examples": [{"input": "root=[3,5,1,6,2,0,8,null,null,7,4], p=5, q=1", "output": "3"}],
+      "constraints": "节点数 [2, 10^5]",
+      "reference_solution": "def lowestCommonAncestor(root, p, q):\n    if not root or root is p or root is q:\n        return root\n    left = lowestCommonAncestor(root.left, p, q)\n    right = lowestCommonAncestor(root.right, p, q)\n    if left and right: return root\n    return left or right\n",
+      "test_cases": [
+        {"input": "[3,5,1,6,2,0,8,null,null,7,4] p=5 q=1", "expected": "3"}
+      ],
+      "source_book": "27王道数据结构",
+      "source_chapter": "树与二叉树",
+      "source_page": 135
+    },
+    {
+      "problem_id": "ds-tree-06",
+      "title": "从前序与中序遍历序列构造二叉树",
+      "description": "根据一棵树的前序遍历与中序遍历构造二叉树。",
+      "difficulty": "medium",
+      "input_format": "preorder, inorder 两个数组",
+      "output_format": "根节点",
+      "examples": [{"input": "pre=[3,9,20,15,7] in=[9,3,15,20,7]", "output": "[3,9,20,null,null,15,7]"}],
+      "constraints": "1 <= 节点数 <= 3000",
+      "reference_solution": "def buildTree(preorder, inorder):\n    if not preorder: return None\n    root = TreeNode(preorder[0])\n    idx = inorder.index(preorder[0])\n    root.left = buildTree(preorder[1:idx+1], inorder[:idx])\n    root.right = buildTree(preorder[idx+1:], inorder[idx+1:])\n    return root\n",
+      "test_cases": [
+        {"input": "[3,9,20,15,7] [9,3,15,20,7]", "expected": "[3,9,20,null,null,15,7]"}
+      ],
+      "source_book": "27王道数据结构",
+      "source_chapter": "树与二叉树",
+      "source_page": 140
+    },
+    {
+      "problem_id": "ds-bst-01",
+      "title": "验证二叉搜索树",
+      "description": "给定二叉树根节点，判断其是否是一个有效的二叉搜索树。",
+      "difficulty": "medium",
+      "input_format": "二叉树根节点",
+      "output_format": "true / false",
+      "examples": [{"input": "[2,1,3]", "output": "true"}],
+      "constraints": "节点数 [1, 10^4]",
+      "reference_solution": "def isValidBST(root):\n    def dfs(n, lo, hi):\n        if not n: return True\n        if not (lo < n.val < hi): return False\n        return dfs(n.left, lo, n.val) and dfs(n.right, n.val, hi)\n    return dfs(root, float('-inf'), float('inf'))\n",
+      "test_cases": [
+        {"input": "[2,1,3]", "expected": "true"},
+        {"input": "[5,1,4,null,null,3,6]", "expected": "false"}
+      ],
+      "source_book": "27王道数据结构",
+      "source_chapter": "树与二叉树",
+      "source_page": 145
+    },
+    {
+      "problem_id": "ds-bst-02",
+      "title": "二叉搜索树中第 K 小的元素",
+      "description": "给定 BST 根节点，返回其中第 k 小的元素。",
+      "difficulty": "medium",
+      "input_format": "root, k",
+      "output_format": "第 k 小的值",
+      "examples": [{"input": "root=[3,1,4,null,2], k=1", "output": "1"}],
+      "constraints": "1 <= k <= 节点数 <= 10^4",
+      "reference_solution": "def kthSmallest(root, k):\n    st, cur = [], root\n    while cur or st:\n        while cur:\n            st.append(cur); cur = cur.left\n        cur = st.pop()\n        k -= 1\n        if k == 0: return cur.val\n        cur = cur.right\n",
+      "test_cases": [
+        {"input": "[3,1,4,null,2] k=1", "expected": "1"},
+        {"input": "[5,3,6,2,4,null,null,1] k=3", "expected": "3"}
+      ],
+      "source_book": "27王道数据结构",
+      "source_chapter": "树与二叉树",
+      "source_page": 148
+    },
+    {
+      "problem_id": "ds-graph-01",
+      "title": "岛屿数量",
+      "description": "给你一个由 '1'（陆地）和 '0'（水域）组成的二维网格，计算岛屿的数量。",
+      "difficulty": "medium",
+      "input_format": "二维字符数组 grid",
+      "output_format": "整数",
+      "examples": [{"input": "[[1,1,0,0,0],[1,1,0,0,0],[0,0,1,0,0],[0,0,0,1,1]]", "output": "3"}],
+      "constraints": "m, n <= 300",
+      "reference_solution": "def numIslands(grid):\n    if not grid: return 0\n    m, n, cnt = len(grid), len(grid[0]), 0\n    def dfs(i, j):\n        if 0 <= i < m and 0 <= j < n and grid[i][j] == '1':\n            grid[i][j] = '0'\n            for x, y in ((i-1,j),(i+1,j),(i,j-1),(i,j+1)):\n                dfs(x, y)\n    for i in range(m):\n        for j in range(n):\n            if grid[i][j] == '1':\n                cnt += 1; dfs(i, j)\n    return cnt\n",
+      "test_cases": [
+        {"input": "[[1,1,0],[0,1,0],[0,0,1]]", "expected": "2"}
+      ],
+      "source_book": "27王道数据结构",
+      "source_chapter": "图",
+      "source_page": 220
+    },
+    {
+      "problem_id": "ds-graph-02",
+      "title": "课程表（拓扑排序）",
+      "description": "判断能否完成所有课程（无环）。",
+      "difficulty": "medium",
+      "input_format": "numCourses, prerequisites 列表",
+      "output_format": "true / false",
+      "examples": [{"input": "2, [[1,0]]", "output": "true"}],
+      "constraints": "1 <= numCourses <= 2000",
+      "reference_solution": "def canFinish(numCourses, prerequisites):\n    g = [[] for _ in range(numCourses)]\n    indeg = [0] * numCourses\n    for a, b in prerequisites:\n        g[b].append(a); indeg[a] += 1\n    q = [i for i, d in enumerate(indeg) if d == 0]\n    taken = 0\n    while q:\n        nq = []\n        for u in q:\n            taken += 1\n            for v in g[u]:\n                indeg[v] -= 1\n                if indeg[v] == 0: nq.append(v)\n        q = nq\n    return taken == numCourses\n",
+      "test_cases": [
+        {"input": "2 [[1,0]]", "expected": "true"},
+        {"input": "2 [[1,0],[0,1]]", "expected": "false"}
+      ],
+      "source_book": "27王道数据结构",
+      "source_chapter": "图",
+      "source_page": 235
+    },
+    {
+      "problem_id": "ds-graph-03",
+      "title": "Dijkstra 最短路径",
+      "description": "给定带权有向图，求 src 到所有点的最短距离。",
+      "difficulty": "hard",
+      "input_format": "n, edges, src",
+      "output_format": "距离数组",
+      "examples": [{"input": "n=3, edges=[[0,1,2],[1,2,3],[0,2,5]], src=0", "output": "[0,2,5]"}],
+      "constraints": "节点数 [1, 10^4]",
+      "reference_solution": "def dijkstra(n, edges, src):\n    import heapq\n    g = [[] for _ in range(n)]\n    for u, v, w in edges:\n        g[u].append((v, w))\n    dist = [float('inf')] * n; dist[src] = 0\n    pq = [(0, src)]\n    while pq:\n        d, u = heapq.heappop(pq)\n        if d > dist[u]: continue\n        for v, w in g[u]:\n            nd = d + w\n            if nd < dist[v]:\n                dist[v] = nd; heapq.heappush(pq, (nd, v))\n    return dist\n",
+      "test_cases": [
+        {"input": "3 [[0,1,2],[1,2,3]] src=0", "expected": "[0,2,5]"}
+      ],
+      "source_book": "27王道数据结构",
+      "source_chapter": "图",
+      "source_page": 248
+    },
+    {
+      "problem_id": "ds-sort-01",
+      "title": "快速排序",
+      "description": "实现快速排序算法。",
+      "difficulty": "medium",
+      "input_format": "整数数组",
+      "output_format": "排序后数组",
+      "examples": [{"input": "[5,2,3,1]", "output": "[1,2,3,5]"}],
+      "constraints": "1 <= n <= 5*10^4",
+      "reference_solution": "def quick_sort(a, lo=0, hi=None):\n    if hi is None: hi = len(a) - 1\n    if lo >= hi: return a\n    p, i, j = a[lo], lo, hi\n    while i < j:\n        while i < j and a[j] >= p: j -= 1\n        while i < j and a[i] <= p: i += 1\n        a[i], a[j] = a[j], a[i]\n    a[lo], a[i] = a[i], a[lo]\n    quick_sort(a, lo, i - 1); quick_sort(a, i + 1, hi)\n    return a\n",
+      "test_cases": [
+        {"input": "[5,2,3,1]", "expected": "[1,2,3,5]"},
+        {"input": "[1]", "expected": "[1]"}
+      ],
+      "source_book": "27王道数据结构",
+      "source_chapter": "排序",
+      "source_page": 280
+    },
+    {
+      "problem_id": "ds-sort-02",
+      "title": "归并排序",
+      "description": "实现归并排序算法。",
+      "difficulty": "medium",
+      "input_format": "整数数组",
+      "output_format": "排序后数组",
+      "examples": [{"input": "[5,1,1,2,0,0]", "output": "[0,0,1,1,2,5]"}],
+      "constraints": "1 <= n <= 5*10^4",
+      "reference_solution": "def merge_sort(a):\n    if len(a) <= 1: return a\n    mid = len(a) // 2\n    return merge(merge_sort(a[:mid]), merge_sort(a[mid:]))\n\ndef merge(l, r):\n    res, i, j = [], 0, 0\n    while i < len(l) and j < len(r):\n        if l[i] <= r[j]: res.append(l[i]); i += 1\n        else: res.append(r[j]); j += 1\n    return res + l[i:] + r[j:]\n",
+      "test_cases": [
+        {"input": "[5,1,1,2,0,0]", "expected": "[0,0,1,1,2,5]"}
+      ],
+      "source_book": "27王道数据结构",
+      "source_chapter": "排序",
+      "source_page": 285
+    },
+    {
+      "problem_id": "ds-sort-03",
+      "title": "堆排序",
+      "description": "实现堆排序（升序）。",
+      "difficulty": "medium",
+      "input_format": "整数数组",
+      "output_format": "排序后数组",
+      "examples": [{"input": "[5,1,4,2,8]", "output": "[1,2,4,5,8]"}],
+      "constraints": "1 <= n <= 10^5",
+      "reference_solution": "def heap_sort(a):\n    n = len(a)\n    for i in range(n // 2 - 1, -1, -1):\n        _sift(a, i, n)\n    for end in range(n - 1, 0, -1):\n        a[0], a[end] = a[end], a[0]; _sift(a, 0, end)\n    return a\n\ndef _sift(a, i, n):\n    while True:\n        l, r = 2 * i + 1, 2 * i + 2\n        m = i\n        if l < n and a[l] > a[m]: m = l\n        if r < n and a[r] > a[m]: m = r\n        if m == i: break\n        a[i], a[m] = a[m], a[i]; i = m\n",
+      "test_cases": [
+        {"input": "[5,1,4,2,8]", "expected": "[1,2,4,5,8]"}
+      ],
+      "source_book": "27王道数据结构",
+      "source_chapter": "排序",
+      "source_page": 290
+    },
+    {
+      "problem_id": "ds-search-01",
+      "title": "二分查找",
+      "description": "在有序数组中查找目标值，返回下标或 -1。",
+      "difficulty": "easy",
+      "input_format": "有序数组 + target",
+      "output_format": "下标或 -1",
+      "examples": [{"input": "nums=[-1,0,3,5,9,12], target=9", "output": "4"}],
+      "constraints": "1 <= n <= 10^4",
+      "reference_solution": "def binary_search(nums, target):\n    lo, hi = 0, len(nums) - 1\n    while lo <= hi:\n        mid = (lo + hi) // 2\n        if nums[mid] == target: return mid\n        elif nums[mid] < target: lo = mid + 1\n        else: hi = mid - 1\n    return -1\n",
+      "test_cases": [
+        {"input": "[-1,0,3,5,9,12] 9", "expected": "4"},
+        {"input": "[-1,0,3,5,9,12] 2", "expected": "-1"}
+      ],
+      "source_book": "27王道数据结构",
+      "source_chapter": "查找",
+      "source_page": 305
+    },
+    {
+      "problem_id": "ds-search-02",
+      "title": "搜索旋转排序数组",
+      "description": "在旋转排序数组中搜索目标值。",
+      "difficulty": "medium",
+      "input_format": "数组 + target",
+      "output_format": "下标或 -1",
+      "examples": [{"input": "[4,5,6,7,0,1,2] target=0", "output": "4"}],
+      "constraints": "1 <= n <= 5000",
+      "reference_solution": "def search(nums, target):\n    lo, hi = 0, len(nums) - 1\n    while lo <= hi:\n        mid = (lo + hi) // 2\n        if nums[mid] == target: return mid\n        if nums[lo] <= nums[mid]:\n            if nums[lo] <= target < nums[mid]: hi = mid - 1\n            else: lo = mid + 1\n        else:\n            if nums[mid] < target <= nums[hi]: lo = mid + 1\n            else: hi = mid - 1\n    return -1\n",
+      "test_cases": [
+        {"input": "[4,5,6,7,0,1,2] 0", "expected": "4"},
+        {"input": "[4,5,6,7,0,1,2] 3", "expected": "-1"}
+      ],
+      "source_book": "27王道数据结构",
+      "source_chapter": "查找",
+      "source_page": 310
+    },
+    {
+      "problem_id": "ds-hash-01",
+      "title": "两数之和",
+      "description": "给定整数数组和目标值，返回两个下标使 nums[i]+nums[j]=target。",
+      "difficulty": "easy",
+      "input_format": "数组 + 整数 target",
+      "output_format": "下标对 [i, j]",
+      "examples": [{"input": "nums=[2,7,11,15] target=9", "output": "[0,1]"}],
+      "constraints": "恰好一个解；不能用同一元素两次",
+      "reference_solution": "def two_sum(nums, target):\n    seen = {}\n    for i, v in enumerate(nums):\n        if target - v in seen:\n            return [seen[target - v], i]\n        seen[v] = i\n    return []\n",
+      "test_cases": [
+        {"input": "[2,7,11,15] 9", "expected": "[0,1]"},
+        {"input": "[3,2,4] 6", "expected": "[1,2]"}
+      ],
+      "source_book": "27王道数据结构",
+      "source_chapter": "查找",
+      "source_page": 318
+    },
+    {
+      "problem_id": "ds-hash-02",
+      "title": "最长无重复字符子串",
+      "description": "给定字符串 s，找出其中不含有重复字符的最长子串的长度。",
+      "difficulty": "medium",
+      "input_format": "字符串 s",
+      "output_format": "整数长度",
+      "examples": [{"input": "abcabcbb", "output": "3"}],
+      "constraints": "0 <= s.length <= 5*10^4",
+      "reference_solution": "def lengthOfLongestSubstring(s):\n    last, lo, ans = {}, 0, 0\n    for i, ch in enumerate(s):\n        if ch in last and last[ch] >= lo:\n            lo = last[ch] + 1\n        last[ch] = i\n        ans = max(ans, i - lo + 1)\n    return ans\n",
+      "test_cases": [
+        {"input": "abcabcbb", "expected": "3"},
+        {"input": "bbbbb", "expected": "1"}
+      ],
+      "source_book": "27王道数据结构",
+      "source_chapter": "查找",
+      "source_page": 320
+    },
+    {
+      "problem_id": "ds-recursion-01",
+      "title": "斐波那契数列",
+      "description": "求斐波那契数列的第 n 项（0,1,1,2,3,5,8,...）。",
+      "difficulty": "easy",
+      "input_format": "整数 n",
+      "output_format": "第 n 项",
+      "examples": [{"input": "n=5", "output": "5"}],
+      "constraints": "0 <= n <= 30",
+      "reference_solution": "def fib(n):\n    if n < 2: return n\n    a, b = 0, 1\n    for _ in range(n - 1):\n        a, b = b, a + b\n    return b\n",
+      "test_cases": [
+        {"input": "5", "expected": "5"},
+        {"input": "10", "expected": "55"}
+      ],
+      "source_book": "27王道数据结构",
+      "source_chapter": "递归",
+      "source_page": 100
+    },
+    {
+      "problem_id": "ds-recursion-02",
+      "title": "汉诺塔",
+      "description": "将 n 个盘子从 A 借助 B 移动到 C，输出移动步骤。",
+      "difficulty": "medium",
+      "input_format": "整数 n",
+      "output_format": "移动步骤序列",
+      "examples": [{"input": "n=2", "output": "A->B, A->C, B->C"}],
+      "constraints": "1 <= n <= 14",
+      "reference_solution": "def hanoi(n, A='A', B='B', C='C'):\n    if n == 0: return []\n    return hanoi(n - 1, A, C, B) + [f'{A}->{C}'] + hanoi(n - 1, B, A, C)\n",
+      "test_cases": [
+        {"input": "1", "expected": "['A->C']"},
+        {"input": "3", "expected": "7 步"}
+      ],
+      "source_book": "27王道数据结构",
+      "source_chapter": "递归",
+      "source_page": 105
+    },
+    {
+      "problem_id": "ds-dp-01",
+      "title": "爬楼梯",
+      "description": "假设你正在爬楼梯，需要 n 阶到达顶部。每次可以爬 1 或 2 个台阶，有多少种不同方法？",
+      "difficulty": "easy",
+      "input_format": "整数 n",
+      "output_format": "方法数",
+      "examples": [{"input": "n=3", "output": "3"}],
+      "constraints": "1 <= n <= 45",
+      "reference_solution": "def climbStairs(n):\n    if n <= 2: return n\n    a, b = 1, 2\n    for _ in range(3, n + 1):\n        a, b = b, a + b\n    return b\n",
+      "test_cases": [
+        {"input": "3", "expected": "3"},
+        {"input": "5", "expected": "8"}
+      ],
+      "source_book": "27王道数据结构",
+      "source_chapter": "动态规划",
+      "source_page": 332
+    },
+    {
+      "problem_id": "ds-dp-02",
+      "title": "最长上升子序列",
+      "description": "给你一个整数数组 nums，找到其中最长严格递增子序列的长度。",
+      "difficulty": "medium",
+      "input_format": "整数数组",
+      "output_format": "整数长度",
+      "examples": [{"input": "[10,9,2,5,3,7,101,18]", "output": "4"}],
+      "constraints": "1 <= n <= 2500",
+      "reference_solution": "def lengthOfLIS(nums):\n    import bisect\n    tails = []\n    for v in nums:\n        i = bisect.bisect_left(tails, v)\n        if i == len(tails): tails.append(v)\n        else: tails[i] = v\n    return len(tails)\n",
+      "test_cases": [
+        {"input": "[10,9,2,5,3,7,101,18]", "expected": "4"},
+        {"input": "[0,1,0,3,2,3]", "expected": "4"}
+      ],
+      "source_book": "27王道数据结构",
+      "source_chapter": "动态规划",
+      "source_page": 340
+    },
+    {
+      "problem_id": "ds-dp-03",
+      "title": "0-1 背包问题",
+      "description": "n 件物品，第 i 件重 w[i]、价值 v[i]，背包容量 W，求最大价值。",
+      "difficulty": "medium",
+      "input_format": "W, weights, values",
+      "output_format": "最大价值",
+      "examples": [{"input": "W=4, w=[2,1,3], v=[4,2,3]", "output": "6"}],
+      "constraints": "1 <= n <= 100, 1 <= W <= 10^4",
+      "reference_solution": "def knapsack01(W, w, v):\n    dp = [0] * (W + 1)\n    for i in range(len(w)):\n        for j in range(W, w[i] - 1, -1):\n            dp[j] = max(dp[j], dp[j - w[i]] + v[i])\n    return dp[W]\n",
+      "test_cases": [
+        {"input": "4 [2,1,3] [4,2,3]", "expected": "6"}
+      ],
+      "source_book": "27王道数据结构",
+      "source_chapter": "动态规划",
+      "source_page": 348
+    },
+    {
+      "problem_id": "ds-dp-04",
+      "title": "最长公共子序列",
+      "description": "给定两个字符串 text1 和 text2，返回它们的最长公共子序列的长度。",
+      "difficulty": "medium",
+      "input_format": "两个字符串",
+      "output_format": "整数长度",
+      "examples": [{"input": "text1='abcde' text2='ace'", "output": "3"}],
+      "constraints": "1 <= length <= 1000",
+      "reference_solution": "def longestCommonSubsequence(text1, text2):\n    m, n = len(text1), len(text2)\n    dp = [[0] * (n + 1) for _ in range(m + 1)]\n    for i in range(m):\n        for j in range(n):\n            if text1[i] == text2[j]:\n                dp[i+1][j+1] = dp[i][j] + 1\n            else:\n                dp[i+1][j+1] = max(dp[i][j+1], dp[i+1][j])\n    return dp[m][n]\n",
+      "test_cases": [
+        {"input": "abcde ace", "expected": "3"},
+        {"input": "abc abc", "expected": "3"}
+      ],
+      "source_book": "27王道数据结构",
+      "source_chapter": "动态规划",
+      "source_page": 355
+    }
+  ]
+}
