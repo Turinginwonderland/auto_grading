@@ -151,7 +151,7 @@ def test_run_grade_task_writes_back_success(client):
     """直接调后台 task：pending 记录会被 task 写成 success。"""
     import asyncio
 
-    from app.db.database import SessionLocal
+    from app.db import database
     from app.models.submission import Submission
     from app.services.grading_service import _run_grade_task
     from app.utils.code_hash import sha256_code
@@ -167,8 +167,8 @@ def test_run_grade_task_writes_back_success(client):
     code = "def f():\n    return 1\n"
     code_h = sha256_code(code)
 
-    # 手动插一条 pending
-    db = SessionLocal()
+    # 手动插一条 pending（用属性访问拿当前 SessionLocal，autouse fixture 重建过）
+    db = database.SessionLocal()
     try:
         sub = Submission(
             problem_id="ds-async-01",
@@ -208,7 +208,7 @@ def test_run_grade_task_writes_failed_on_error(client, monkeypatch):
     """后台 task 调 LLM 抛异常时，写 status=failed + error_message。"""
     import asyncio
 
-    from app.db.database import SessionLocal
+    from app.db import database
     from app.models.submission import Submission
     from app.services import grading_service
     from app.services.grading_service import _run_grade_task
@@ -230,7 +230,7 @@ def test_run_grade_task_writes_failed_on_error(client, monkeypatch):
 
     code = "x=1\n"
     code_h = sha256_code(code)
-    db = SessionLocal()
+    db = database.SessionLocal()
     try:
         sub = Submission(
             problem_id="ds-async-err",

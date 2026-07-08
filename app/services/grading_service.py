@@ -8,7 +8,7 @@ from typing import Any
 from sqlalchemy.orm import Session
 
 from app.core.logging import logger
-from app.db.database import SessionLocal
+from app.db import database
 from app.models.problem import Problem
 from app.models.submission import Submission
 from app.prompts.rubric import DIMENSIONS, RUBRIC
@@ -164,7 +164,7 @@ async def _run_grade_task(
     code_h: str,
 ) -> None:
     """后台 task：开新 session 跑同步核心，异常时写 failed。"""
-    db = SessionLocal()
+    db = database.SessionLocal()
     try:
         sub = db.query(Submission).filter(Submission.submission_id == submission_id).first()
         if sub is None:
