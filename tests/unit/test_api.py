@@ -145,3 +145,119 @@ def test_full_grade_flow_and_cache(client):
     r4 = client.get("/api/v1/submissions?problem_id=ds-flow-01")
     assert r4.status_code == 200
     assert len(r4.json()) >= 2
+
+
+def test_run_grade_task_writes_back_success(client):
+    """直接调后台 task：pending 记录会被 task 写成 success。"""
+    import asyncio
+
+    from app.db.database import SessionLocal
+    from app.models.submission import Submission
+    from app.services.grading_service import _run_grade_task
+    from app.utils.code_hash import sha256_code
+
+    client.post(
+        "/api/v1/problems",
+        json={
+            "problem_id": "ds-async-01",
+            "title": "x",
+            "description": "x",
+        },
+    )
+    code = "def f():\n    return 1\n"
+    code_h = sha256_code(code)
+
+    # 手动插一条 pending
+    db = SessionLocal()
+    try:
+        sub = Submission(
+            problem_id="ds-async-01",
+            code=code,
+            language="python",
+            code_hash=code_h,
+            status="pending",
+        )
+        db.add(sub)
+        db.commit()
+        db.refresh(sub)
+        sid = sub.submission_id
+    finally:
+        db.close()
+
+    asyncio.run(
+        _run_grade_task(
+            sid,
+            problem_id="ds-async-01",
+            code=code,
+            language="python",
+            code_h=code_h,
+        )
+    )
+
+    r = client.get(f"/api/v1/submissions/{sid}")
+    assert r.status_code == 200
+    body = r.json()
+    assert body["status"] == "success"
+    assert body["overall_score"] is not None
+    assert 0 <= body["overall_score"] <= 100
+    assert body["dimension_scores"] is not None
+    assert "scores" in body["dimension_scores"]
+
+
+def test_run_grade_task_writes_failed_on_error(client, monkeypatch):
+    """后台 task 调 LLM 抛异常时，写 status=failed + error_message。"""
+    import asyncio
+
+    from app.db.database import SessionLocal
+    from app.models.submission import Submission
+    from app.services import grading_service
+    from app.services.grading_service import _run_grade_task
+    from app.utils.code_hash import sha256_code
+
+    client.post(
+        "/api/v1/problems",
+        json={
+            "problem_id": "ds-async-err",
+            "title": "x",
+            "description": "x",
+        },
+    )
+
+    def _boom(**kwargs):
+        raise RuntimeError("fake LLM down")
+
+    monkeypatch.setattr(grading_service, "grade_code", _boom)
+
+    code = "x=1\n"
+    code_h = sha256_code(code)
+    db = SessionLocal()
+    try:
+        sub = Submission(
+            problem_id="ds-async-err",
+            code=code,
+            language="python",
+            code_hash=code_h,
+            status="pending",
+        )
+        db.add(sub)
+        db.commit()
+        db.refresh(sub)
+        sid = sub.submission_id
+    finally:
+        db.close()
+
+    asyncio.run(
+        _run_grade_task(
+            sid,
+            problem_id="ds-async-err",
+            code=code,
+            language="python",
+            code_h=code_h,
+        )
+    )
+
+    r = client.get(f"/api/v1/submissions/{sid}")
+    assert r.status_code == 200
+    body = r.json()
+    assert body["status"] == "failed"
+    assert "fake LLM down" in (body.get("error_message") or "")

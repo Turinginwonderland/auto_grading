@@ -18,6 +18,11 @@ router = APIRouter()
 
 @router.post("/grade", response_model=GradeResponse)
 def post_grade(req: GradeRequest, db: Session = Depends(get_db)) -> GradeResponse:
+    """
+    提交评分。
+    - 缓存命中：同步完成，status="success"
+    - 缓存未命中：起后台 asyncio task，status="pending"，前端轮询 GET /submissions/{id}
+    """
     try:
         sub, cached = grade_submission(
             db,
@@ -29,8 +34,8 @@ def post_grade(req: GradeRequest, db: Session = Depends(get_db)) -> GradeRespons
     except LookupError as e:
         raise HTTPException(status_code=404, detail=str(e))
     except Exception as e:  # noqa: BLE001
-        logger.exception("grade failed")
-        raise HTTPException(status_code=500, detail=f"grade failed: {e}")
+        logger.exception("grade submit failed")
+        raise HTTPException(status_code=500, detail=f"grade submit failed: {e}")
 
     payload = submission_to_response(sub, cached)
     return GradeResponse(**payload)
