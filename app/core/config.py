@@ -36,6 +36,13 @@ class Settings(BaseSettings):
     grade_cache_ttl: int = Field(default=86400, alias="GRADE_CACHE_TTL")
     grade_cache_maxsize: int = Field(default=1024, alias="GRADE_CACHE_MAXSIZE")
 
+    # Sandbox（P2.x 硬化）
+    sandbox_backend: str = Field(default="subprocess", alias="SANDBOX_BACKEND")
+    sandbox_memory_mb: int = Field(default=256, alias="SANDBOX_MEMORY_MB")
+    sandbox_max_processes: int = Field(default=32, alias="SANDBOX_MAX_PROCESSES")
+    # 0 = 自动 = wall_timeout + 1 秒
+    sandbox_cpu_time_sec: int = Field(default=0, alias="SANDBOX_CPU_TIME_SEC")
+
     @property
     def use_real_llm(self) -> bool:
         return bool(self.llm_api_key)
