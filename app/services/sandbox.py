@@ -1,11 +1,12 @@
-"""代码沙箱（Phase 2 性能维度前置）。
+"""代码沙箱（Phase 2 性能维度前置 + P2.x 硬化）。
 
-MVP 实现：用 subprocess + timeout 跑 Python 代码，逐个用例验证。
-- **不**做 syscall 拦截（生产应上 Docker / gVisor）
-- **不**限制网络/文件访问（仅靠 timeout + 代码长度限制兜底）
+实现：用 subprocess + timeout 跑 Python 代码，逐个用例验证。
+- **P2.x 硬化**：resource.setrlimit 限制内存（RLIMIT_AS）/ CPU 时间（RLIMIT_CPU）/ 进程数（RLIMIT_NPROC）
+  - 仅 POSIX 生效；Windows 优雅降级（仅靠 wall-clock timeout + 代码长度限制）
+- **不**做 syscall 拦截 / 网络隔离（生产应上 Docker / gVisor）
 - 通过 JSON 序列化用例入参，避免字符串解析歧义
 
-后续 P2.x 可替换为 Docker 版本（接口不变）。
+后续 P2.y 可加 Docker backend（接口不变）。
 """
 from __future__ import annotations
 
@@ -16,6 +17,8 @@ import sys
 import time
 from dataclasses import asdict, dataclass, field
 from typing import Any
+
+from app.core.config import get_settings
 
 # ---------- 数据结构 ----------
 
@@ -58,7 +61,9 @@ RESULT_TAG = "===SANDBOX_RESULT==="
 
 # 拼装到用户代码后的 runner 模板。CASES_JSON 会被安全转义后填入。
 # FUNC_NAME 占位符在运行时替换为入口函数名。
+# 顶部 PRELUDE 在子进程启动时立即生效，注入 resource 限制。
 _RUNNER_TEMPLATE = '''
+__PRELUDE_PLACEHOLDER__
 import json as __json
 import time as __time
 import sys as __sys
@@ -98,6 +103,24 @@ __sandbox_runner__()
 '''
 
 
+def _build_prelude(memory_mb: int, cpu_time_sec: int, max_procs: int) -> str:
+    """生成 wrapper 顶部的资源限制 prelude（POSIX 生效，Windows 优雅降级）。"""
+    return (
+        "try:\n"
+        "    import resource as __resource_mod\n"
+        f"    __resource_mod.setrlimit(__resource_mod.RLIMIT_AS, "
+        f"({memory_mb} * 1024 * 1024, {memory_mb} * 1024 * 1024))\n"
+        f"    __resource_mod.setrlimit(__resource_mod.RLIMIT_CPU, "
+        f"({cpu_time_sec}, {cpu_time_sec + 1}))\n"
+        f"    __resource_mod.setrlimit(__resource_mod.RLIMIT_NPROC, "
+        f"({max_procs}, {max_procs}))\n"
+        "except ImportError:\n"
+        "    pass  # Windows: resource module not available\n"
+        "except (ValueError, OSError):\n"
+        "    pass  # 容器/受限环境可能禁止修改 limit\n"
+    )
+
+
 # ---------- 公开 API ----------
 
 def run_python(
@@ -118,6 +141,11 @@ def run_python(
     Returns:
         SandboxResult。``error`` 非空表示全局失败（未跑用例）；否则按 cases 看。
     """
+    settings = get_settings()
+    memory_mb = settings.sandbox_memory_mb
+    max_procs = settings.sandbox_max_processes
+    cpu_time_sec = settings.sandbox_cpu_time_sec or int(timeout) + 1
+
     if len(code.encode("utf-8")) > MAX_CODE_BYTES:
         return SandboxResult(
             passed=0, total=0, error=f"code too large (> {MAX_CODE_BYTES} bytes)"
@@ -154,6 +182,7 @@ def run_python(
     cases_json_escaped = cases_json.replace("\\", "\\\\").replace('"', '\\"')
     runner = _RUNNER_TEMPLATE.replace("__CASES_JSON_PLACEHOLDER__", f'"{cases_json_escaped}"')
     runner = runner.replace("__FUNC_NAME_PLACEHOLDER__", safe_func_name)
+    runner = runner.replace("__PRELUDE_PLACEHOLDER__", _build_prelude(memory_mb, cpu_time_sec, max_procs))
 
     wrapper = code + "\n\n" + runner
 
@@ -182,12 +211,16 @@ def run_python(
 
     total_runtime_ms = int((time.perf_counter() - start) * 1000)
 
+    # 资源限制触发的 kill 通常返回负数退出码或特定信号
     if proc.returncode != 0:
+        sig = ""
+        if proc.returncode and proc.returncode < 0:
+            sig = f" (signal {-proc.returncode})"
         return SandboxResult(
             passed=0,
             total=len(test_cases),
             total_runtime_ms=total_runtime_ms,
-            error=f"exit {proc.returncode}: {(proc.stderr or '').strip()[:500]}",
+            error=f"exit {proc.returncode}{sig}: {(proc.stderr or '').strip()[:500]}",
         )
 
     # 解析 stdout 找结果

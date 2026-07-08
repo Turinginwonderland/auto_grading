@@ -12,14 +12,20 @@ import pytest
 
 @pytest.fixture(autouse=True)
 def _isolate_db(tmp_path, monkeypatch):
-    """每个测试用临时 sqlite 隔离 DB。
+    """每个测试用临时 sqlite 隔离 DB + 还原 settings。
 
-    解决：app.db.database 的 engine 是 module-level，import 时锁了 DATABASE_URL；
-    不重置会导致所有测试共享默认 DB（可能含脏数据），产生跨测试污染。
+    解决：
+    - app.db.database 的 engine 是 module-level，import 时锁了 DATABASE_URL；
+      不重置会导致所有测试共享默认 DB（含脏数据），产生跨测试污染。
+    - app.core.config.settings 是 module-level 单例，测试里 object.__setattr__ 改的
+      是这个实例；不 cache_clear 还原，会污染后续测试读到的 settings。
     """
     db_file = tmp_path / f"test_{os.getpid()}.db"
     monkeypatch.setenv("DATABASE_URL", f"sqlite:///{db_file}")
     monkeypatch.setenv("LLM_API_KEY", "")
+    monkeypatch.setenv("SANDBOX_MEMORY_MB", "256")
+    monkeypatch.setenv("SANDBOX_MAX_PROCESSES", "32")
+    monkeypatch.setenv("SANDBOX_CPU_TIME_SEC", "0")
     from app.core import config
     config.get_settings.cache_clear()
 
@@ -43,3 +49,6 @@ def _isolate_db(tmp_path, monkeypatch):
     cache._cache.clear()
 
     yield
+
+    # 还原 settings 单例，避免 object.__setattr__ 改的值污染后续测试
+    config.get_settings.cache_clear()
