@@ -48,10 +48,10 @@ class DimensionsOut(BaseModel):
 class GradeResponse(BaseModel):
     submission_id: str
     problem_id: str
-    overall_score: float
-    dimensions: DimensionsOut
-    llm_comment: str
-    llm_model: str
+    status: str = "success"  # pending | success | failed
+    overall_score: Optional[float] = None
+    dimensions: Optional[DimensionsOut] = None
+    llm_comment: str = ""
+    llm_model: str = ""
     created_at: datetime
-    status: str = "success"
     cached: bool = False

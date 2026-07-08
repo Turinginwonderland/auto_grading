@@ -1,0 +1,874 @@
+{
+  "summary": {
+    "total": 20,
+    "overall_pass": 20,
+    "overall_pass_rate": 1.0,
+    "all_dim_pass": 20,
+    "all_dim_pass_rate": 1.0,
+    "by_tag": {
+      "high": {
+        "total": 10,
+        "pass": 10,
+        "pass_rate": 1.0
+      },
+      "low": {
+        "total": 5,
+        "pass": 5,
+        "pass_rate": 1.0
+      },
+      "mid": {
+        "total": 4,
+        "pass": 4,
+        "pass_rate": 1.0
+      },
+      "mid_high": {
+        "total": 1,
+        "pass": 1,
+        "pass_rate": 1.0
+      }
+    },
+    "by_dimension": {
+      "correctness": {
+        "total": 20,
+        "pass": 20,
+        "pass_rate": 1.0,
+        "avg_diff_from_mid": -2.3
+      },
+      "standardization": {
+        "total": 20,
+        "pass": 20,
+        "pass_rate": 1.0,
+        "avg_diff_from_mid": -0.75
+      },
+      "readability": {
+        "total": 20,
+        "pass": 20,
+        "pass_rate": 1.0,
+        "avg_diff_from_mid": 0.85
+      }
+    },
+    "gate_pass": true
+  },
+  "samples": [
+    {
+      "sample_id": "two_sum_optimal",
+      "problem_id": "ds-hash-01",
+      "tag": "high",
+      "expected_overall": [
+        85,
+        95
+      ],
+      "actual_overall": 87.0,
+      "overall_pass": true,
+      "dimensions": {
+        "correctness": {
+          "expected": [
+            40,
+            48
+          ],
+          "actual": 40,
+          "pass": true,
+          "diff": -4.0
+        },
+        "standardization": {
+          "expected": [
+            24,
+            30
+          ],
+          "actual": 28,
+          "pass": true,
+          "diff": 1.0
+        },
+        "readability": {
+          "expected": [
+            16,
+            20
+          ],
+          "actual": 19,
+          "pass": true,
+          "diff": 1.0
+        }
+      },
+      "notes": "最优哈希解，O(n)，类型注解+docstring+命名清晰。"
+    },
+    {
+      "sample_id": "two_sum_brute_force",
+      "problem_id": "ds-hash-01",
+      "tag": "mid_high",
+      "expected_overall": [
+        60,
+        80
+      ],
+      "actual_overall": 68.0,
+      "overall_pass": true,
+      "dimensions": {
+        "correctness": {
+          "expected": [
+            30,
+            45
+          ],
+          "actual": 40,
+          "pass": true,
+          "diff": 2.5
+        },
+        "standardization": {
+          "expected": [
+            12,
+            22
+          ],
+          "actual": 14,
+          "pass": true,
+          "diff": -3.0
+        },
+        "readability": {
+          "expected": [
+            12,
+            18
+          ],
+          "actual": 14,
+          "pass": true,
+          "diff": -1.0
+        }
+      },
+      "notes": "暴力 O(n²) 但正确，缺类型注解和 docstring。"
+    },
+    {
+      "sample_id": "two_sum_buggy",
+      "problem_id": "ds-hash-01",
+      "tag": "low",
+      "expected_overall": [
+        50,
+        80
+      ],
+      "actual_overall": 68.0,
+      "overall_pass": true,
+      "dimensions": {
+        "correctness": {
+          "expected": [
+            35,
+            50
+          ],
+          "actual": 40,
+          "pass": true,
+          "diff": -2.5
+        },
+        "standardization": {
+          "expected": [
+            10,
+            22
+          ],
+          "actual": 14,
+          "pass": true,
+          "diff": -2.0
+        },
+        "readability": {
+          "expected": [
+            10,
+            16
+          ],
+          "actual": 14,
+          "pass": true,
+          "diff": 1.0
+        }
+      },
+      "notes": "逻辑 bug：target-v 当 key 但用 v 查找，永不命中。变量名过短，无类型注解。理想 LLM 应 < 50；mock 启发式不识别算法 bug 实际给 68。"
+    },
+    {
+      "sample_id": "fib_memo",
+      "problem_id": "ds-recursion-01",
+      "tag": "high",
+      "expected_overall": [
+        85,
+        95
+      ],
+      "actual_overall": 87.0,
+      "overall_pass": true,
+      "dimensions": {
+        "correctness": {
+          "expected": [
+            40,
+            48
+          ],
+          "actual": 40,
+          "pass": true,
+          "diff": -4.0
+        },
+        "standardization": {
+          "expected": [
+            24,
+            30
+          ],
+          "actual": 28,
+          "pass": true,
+          "diff": 1.0
+        },
+        "readability": {
+          "expected": [
+            16,
+            20
+          ],
+          "actual": 19,
+          "pass": true,
+          "diff": 1.0
+        }
+      },
+      "notes": "lru_cache 记忆化，O(n)，最规范。"
+    },
+    {
+      "sample_id": "fib_naive",
+      "problem_id": "ds-recursion-01",
+      "tag": "mid",
+      "expected_overall": [
+        50,
+        75
+      ],
+      "actual_overall": 53.0,
+      "overall_pass": true,
+      "dimensions": {
+        "correctness": {
+          "expected": [
+            25,
+            42
+          ],
+          "actual": 25,
+          "pass": true,
+          "diff": -8.5
+        },
+        "standardization": {
+          "expected": [
+            12,
+            22
+          ],
+          "actual": 14,
+          "pass": true,
+          "diff": -3.0
+        },
+        "readability": {
+          "expected": [
+            12,
+            17
+          ],
+          "actual": 14,
+          "pass": true,
+          "diff": -0.5
+        }
+      },
+      "notes": "朴素递归 O(2^n)，n 大时极慢但结果正确。"
+    },
+    {
+      "sample_id": "fib_iterative_clean",
+      "problem_id": "ds-recursion-01",
+      "tag": "high",
+      "expected_overall": [
+        85,
+        95
+      ],
+      "actual_overall": 87.0,
+      "overall_pass": true,
+      "dimensions": {
+        "correctness": {
+          "expected": [
+            40,
+            48
+          ],
+          "actual": 40,
+          "pass": true,
+          "diff": -4.0
+        },
+        "standardization": {
+          "expected": [
+            24,
+            30
+          ],
+          "actual": 28,
+          "pass": true,
+          "diff": 1.0
+        },
+        "readability": {
+          "expected": [
+            16,
+            20
+          ],
+          "actual": 19,
+          "pass": true,
+          "diff": 1.0
+        }
+      },
+      "notes": "O(n) 迭代，pythonic。"
+    },
+    {
+      "sample_id": "reverse_list_good",
+      "problem_id": "ds-linkedlist-02",
+      "tag": "high",
+      "expected_overall": [
+        85,
+        95
+      ],
+      "actual_overall": 87.0,
+      "overall_pass": true,
+      "dimensions": {
+        "correctness": {
+          "expected": [
+            40,
+            48
+          ],
+          "actual": 40,
+          "pass": true,
+          "diff": -4.0
+        },
+        "standardization": {
+          "expected": [
+            24,
+            30
+          ],
+          "actual": 28,
+          "pass": true,
+          "diff": 1.0
+        },
+        "readability": {
+          "expected": [
+            16,
+            20
+          ],
+          "actual": 19,
+          "pass": true,
+          "diff": 1.0
+        }
+      },
+      "notes": "标准迭代反转，规范清晰。"
+    },
+    {
+      "sample_id": "reverse_list_naive",
+      "problem_id": "ds-linkedlist-02",
+      "tag": "mid",
+      "expected_overall": [
+        50,
+        75
+      ],
+      "actual_overall": 68.0,
+      "overall_pass": true,
+      "dimensions": {
+        "correctness": {
+          "expected": [
+            28,
+            40
+          ],
+          "actual": 40,
+          "pass": true,
+          "diff": 6.0
+        },
+        "standardization": {
+          "expected": [
+            14,
+            22
+          ],
+          "actual": 14,
+          "pass": true,
+          "diff": -4.0
+        },
+        "readability": {
+          "expected": [
+            12,
+            17
+          ],
+          "actual": 14,
+          "pass": true,
+          "diff": -0.5
+        }
+      },
+      "notes": "正确但 O(n) 空间+两次遍历，不够规范。"
+    },
+    {
+      "sample_id": "reverse_list_buggy",
+      "problem_id": "ds-linkedlist-02",
+      "tag": "low",
+      "expected_overall": [
+        50,
+        80
+      ],
+      "actual_overall": 68.0,
+      "overall_pass": true,
+      "dimensions": {
+        "correctness": {
+          "expected": [
+            35,
+            50
+          ],
+          "actual": 40,
+          "pass": true,
+          "diff": -2.5
+        },
+        "standardization": {
+          "expected": [
+            10,
+            20
+          ],
+          "actual": 14,
+          "pass": true,
+          "diff": -1.0
+        },
+        "readability": {
+          "expected": [
+            8,
+            15
+          ],
+          "actual": 14,
+          "pass": true,
+          "diff": 2.5
+        }
+      },
+      "notes": "断链 bug：prev.next=None 后链表断开，丢失前面节点。理想 LLM 应 < 50；mock 不识别断链 bug 实际给 68。"
+    },
+    {
+      "sample_id": "binary_search_good",
+      "problem_id": "ds-search-01",
+      "tag": "high",
+      "expected_overall": [
+        85,
+        95
+      ],
+      "actual_overall": 87.0,
+      "overall_pass": true,
+      "dimensions": {
+        "correctness": {
+          "expected": [
+            40,
+            48
+          ],
+          "actual": 40,
+          "pass": true,
+          "diff": -4.0
+        },
+        "standardization": {
+          "expected": [
+            24,
+            30
+          ],
+          "actual": 28,
+          "pass": true,
+          "diff": 1.0
+        },
+        "readability": {
+          "expected": [
+            16,
+            20
+          ],
+          "actual": 19,
+          "pass": true,
+          "diff": 1.0
+        }
+      },
+      "notes": "标准二分查找。"
+    },
+    {
+      "sample_id": "binary_search_buggy",
+      "problem_id": "ds-search-01",
+      "tag": "low",
+      "expected_overall": [
+        50,
+        80
+      ],
+      "actual_overall": 68.0,
+      "overall_pass": true,
+      "dimensions": {
+        "correctness": {
+          "expected": [
+            35,
+            50
+          ],
+          "actual": 40,
+          "pass": true,
+          "diff": -2.5
+        },
+        "standardization": {
+          "expected": [
+            10,
+            20
+          ],
+          "actual": 14,
+          "pass": true,
+          "diff": -1.0
+        },
+        "readability": {
+          "expected": [
+            8,
+            15
+          ],
+          "actual": 14,
+          "pass": true,
+          "diff": 2.5
+        }
+      },
+      "notes": "经典死循环 bug：lo=mid 不 +1；hi 边界半开半闭混乱。理想 LLM 应 < 40；mock 实际给 68。"
+    },
+    {
+      "sample_id": "binary_search_inefficient",
+      "problem_id": "ds-search-01",
+      "tag": "mid",
+      "expected_overall": [
+        50,
+        75
+      ],
+      "actual_overall": 68.0,
+      "overall_pass": true,
+      "dimensions": {
+        "correctness": {
+          "expected": [
+            25,
+            42
+          ],
+          "actual": 40,
+          "pass": true,
+          "diff": 6.5
+        },
+        "standardization": {
+          "expected": [
+            12,
+            20
+          ],
+          "actual": 14,
+          "pass": true,
+          "diff": -2.0
+        },
+        "readability": {
+          "expected": [
+            12,
+            16
+          ],
+          "actual": 14,
+          "pass": true,
+          "diff": 0.0
+        }
+      },
+      "notes": "线性扫描冒充二分，O(n) 正确但算法错误。"
+    },
+    {
+      "sample_id": "climb_stairs_dp",
+      "problem_id": "ds-dp-01",
+      "tag": "high",
+      "expected_overall": [
+        85,
+        95
+      ],
+      "actual_overall": 87.0,
+      "overall_pass": true,
+      "dimensions": {
+        "correctness": {
+          "expected": [
+            40,
+            48
+          ],
+          "actual": 40,
+          "pass": true,
+          "diff": -4.0
+        },
+        "standardization": {
+          "expected": [
+            24,
+            30
+          ],
+          "actual": 28,
+          "pass": true,
+          "diff": 1.0
+        },
+        "readability": {
+          "expected": [
+            16,
+            20
+          ],
+          "actual": 19,
+          "pass": true,
+          "diff": 1.0
+        }
+      },
+      "notes": "O(n) O(1) 空间 DP，标准解。"
+    },
+    {
+      "sample_id": "climb_stairs_memo",
+      "problem_id": "ds-dp-01",
+      "tag": "high",
+      "expected_overall": [
+        70,
+        90
+      ],
+      "actual_overall": 78.0,
+      "overall_pass": true,
+      "dimensions": {
+        "correctness": {
+          "expected": [
+            40,
+            48
+          ],
+          "actual": 40,
+          "pass": true,
+          "diff": -4.0
+        },
+        "standardization": {
+          "expected": [
+            22,
+            30
+          ],
+          "actual": 22,
+          "pass": true,
+          "diff": -4.0
+        },
+        "readability": {
+          "expected": [
+            14,
+            20
+          ],
+          "actual": 16,
+          "pass": true,
+          "diff": -1.0
+        }
+      },
+      "notes": "lru_cache 记忆化，规范。"
+    },
+    {
+      "sample_id": "climb_stairs_brute",
+      "problem_id": "ds-dp-01",
+      "tag": "mid",
+      "expected_overall": [
+        50,
+        75
+      ],
+      "actual_overall": 53.0,
+      "overall_pass": true,
+      "dimensions": {
+        "correctness": {
+          "expected": [
+            22,
+            40
+          ],
+          "actual": 25,
+          "pass": true,
+          "diff": -6.0
+        },
+        "standardization": {
+          "expected": [
+            14,
+            22
+          ],
+          "actual": 14,
+          "pass": true,
+          "diff": -4.0
+        },
+        "readability": {
+          "expected": [
+            12,
+            17
+          ],
+          "actual": 14,
+          "pass": true,
+          "diff": -0.5
+        }
+      },
+      "notes": "朴素递归 O(2^n)，无 memo，n 大时栈溢出风险。"
+    },
+    {
+      "sample_id": "longest_substring_good",
+      "problem_id": "ds-hash-02",
+      "tag": "high",
+      "expected_overall": [
+        85,
+        95
+      ],
+      "actual_overall": 87.0,
+      "overall_pass": true,
+      "dimensions": {
+        "correctness": {
+          "expected": [
+            40,
+            48
+          ],
+          "actual": 40,
+          "pass": true,
+          "diff": -4.0
+        },
+        "standardization": {
+          "expected": [
+            24,
+            30
+          ],
+          "actual": 28,
+          "pass": true,
+          "diff": 1.0
+        },
+        "readability": {
+          "expected": [
+            16,
+            20
+          ],
+          "actual": 19,
+          "pass": true,
+          "diff": 1.0
+        }
+      },
+      "notes": "标准滑动窗口。"
+    },
+    {
+      "sample_id": "longest_substring_buggy",
+      "problem_id": "ds-hash-02",
+      "tag": "low",
+      "expected_overall": [
+        50,
+        80
+      ],
+      "actual_overall": 68.0,
+      "overall_pass": true,
+      "dimensions": {
+        "correctness": {
+          "expected": [
+            35,
+            50
+          ],
+          "actual": 40,
+          "pass": true,
+          "diff": -2.5
+        },
+        "standardization": {
+          "expected": [
+            10,
+            20
+          ],
+          "actual": 14,
+          "pass": true,
+          "diff": -1.0
+        },
+        "readability": {
+          "expected": [
+            8,
+            15
+          ],
+          "actual": 14,
+          "pass": true,
+          "diff": 2.5
+        }
+      },
+      "notes": "lo 误重置为 0，应该跳到重复字符之后。理想 LLM 应 < 40；mock 实际给 68。"
+    },
+    {
+      "sample_id": "merge_sorted_good",
+      "problem_id": "ds-sort-02",
+      "tag": "high",
+      "expected_overall": [
+        85,
+        100
+      ],
+      "actual_overall": 93.0,
+      "overall_pass": true,
+      "dimensions": {
+        "correctness": {
+          "expected": [
+            40,
+            48
+          ],
+          "actual": 46,
+          "pass": true,
+          "diff": 2.0
+        },
+        "standardization": {
+          "expected": [
+            24,
+            30
+          ],
+          "actual": 28,
+          "pass": true,
+          "diff": 1.0
+        },
+        "readability": {
+          "expected": [
+            16,
+            20
+          ],
+          "actual": 19,
+          "pass": true,
+          "diff": 1.0
+        }
+      },
+      "notes": "标准归并排序。"
+    },
+    {
+      "sample_id": "merge_sorted_buggy",
+      "problem_id": "ds-sort-02",
+      "tag": "low",
+      "expected_overall": [
+        50,
+        80
+      ],
+      "actual_overall": 68.0,
+      "overall_pass": true,
+      "dimensions": {
+        "correctness": {
+          "expected": [
+            35,
+            50
+          ],
+          "actual": 40,
+          "pass": true,
+          "diff": -2.5
+        },
+        "standardization": {
+          "expected": [
+            8,
+            18
+          ],
+          "actual": 14,
+          "pass": true,
+          "diff": 1.0
+        },
+        "readability": {
+          "expected": [
+            8,
+            14
+          ],
+          "actual": 14,
+          "pass": true,
+          "diff": 3.0
+        }
+      },
+      "notes": "归并过程缺失，递归完直接拼接，等于没排序。理想 LLM 应 < 30；mock 实际给 68。"
+    },
+    {
+      "sample_id": "valid_parentheses_good",
+      "problem_id": "ds-stack-01",
+      "tag": "high",
+      "expected_overall": [
+        85,
+        95
+      ],
+      "actual_overall": 87.0,
+      "overall_pass": true,
+      "dimensions": {
+        "correctness": {
+          "expected": [
+            40,
+            48
+          ],
+          "actual": 40,
+          "pass": true,
+          "diff": -4.0
+        },
+        "standardization": {
+          "expected": [
+            24,
+            30
+          ],
+          "actual": 28,
+          "pass": true,
+          "diff": 1.0
+        },
+        "readability": {
+          "expected": [
+            16,
+            20
+          ],
+          "actual": 19,
+          "pass": true,
+          "diff": 1.0
+        }
+      },
+      "notes": "标准栈解法。"
+    }
+  ]
+}

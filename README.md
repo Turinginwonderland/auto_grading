@@ -1,6 +1,6 @@
 # Code Grader (Phase 1)
 
-> LLM-as-a-Judge 代码评分器 — 当前阶段：P1.0 基础架子
+> LLM-as-a-Judge 代码评分器 — 当前阶段：**P1 全部完成** ✅
 > 规划文件：[planning_mini.md](./planning_mini.md)
 
 ## 当前进度
@@ -9,9 +9,9 @@
 |---|---|
 | P1.0 基础架子（FastAPI + DB + grade 接口 + mock rubric） | ✅ |
 | P1.1 OCR 题目入库（PDF → 题库 ≥ 30 道） | ✅ 流水线已就绪 + 34 道示例题 |
-| P1.2 System Prompt v2 + Few-shot + 重试/校验 | ✅（已写） |
-| P1.3 评分缓存 + 异步化 | ✅（缓存已写；异步待 P1.3） |
-| P1.4 评测集 + 一致性报告 | TODO |
+| P1.2 System Prompt v2 + Few-shot + 重试/校验 | ✅ |
+| P1.3 评分缓存 + 异步化 | ✅ 缓存 + POST 立即返 submission_id + 后台 task |
+| P1.4 评测集 + 一致性报告 | ✅ 20 条样本 / 100% 吻合（mock） / gate PASS |
 
 ## 快速开始
 
@@ -55,7 +55,7 @@ LLM_MODEL=gpt-4o
 | GET  | `/api/v1/health` | 健康检查 |
 | POST | `/api/v1/problems` | 新增题目 |
 | GET  | `/api/v1/problems/{id}` | 题目详情 |
-| POST | `/api/v1/grade` | 提交评分（同步，P1.3 会改异步） |
+| POST | `/api/v1/grade` | 提交评分（**异步**：返 `submission_id` + `status=pending`；轮询 GET 拿结果） |
 | GET  | `/api/v1/submissions/{id}` | 提交详情 |
 | GET  | `/api/v1/submissions?problem_id=&student_id=` | 列表（分页） |
 
@@ -177,5 +177,6 @@ python -m ingestion.runner --pdf xxx.pdf --backend mock --limit 20 --no-db
 
 ## 下一步
 
-- **P1.3**：把 `grade_submission` 改异步，前端拿 submission_id 轮询
-- **P1.4**：建 20-30 条带标注的评测集，统计吻合率（< 80% 不许过 P1）
+- **P2 (待规划)**：性能维度（沙箱跑测试）+ 多语言扩展 + 多模型对比
+- 接 LLM 后重跑 `tests/eval/run_eval.py --runs 3` 验证 ≥80% 吻合率
+- 如需更多评测样本，编辑 `tests/eval/labeled_samples.json`（20 条起步）
